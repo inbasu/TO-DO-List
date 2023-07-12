@@ -1,0 +1,32 @@
+
+{% extends 'layout/baselayout.html' %}
+{% block content %}
+
+<h1>{{ list.name }}</h1>    
+<table>
+    
+    {% for task in tasks %}
+            
+        <tr>
+            <td><a href="{% url 'done_task' task.pk %}" class='{% if task.is_done %}done{% else %}undone{% endif %}'>{{ task.text }}</a></td>
+            <td>
+                <form method="POST" action="{% url 'del_task' task.pk %}">
+                    {% csrf_token %}
+                    <button type="submit">Del</button>
+                </form>
+              </td> 
+        </tr>
+
+    {% endfor %}
+    <tr>
+        <form action="{% url 'new' list.pk %}" id="task_creaton_form" method="POST">
+            {% csrf_token %}
+
+            <td><input type="text" placeholder="Write new task" name="text"></td>
+            <td><button type="submit">Create</button></td>
+        </form>
+    </tr>
+</table>
+
+
+{% endblock content %}

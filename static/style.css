@@ -1,0 +1,24 @@
+table {
+    background-color: aquamarine;
+}
+
+
+
+.done {
+    text-decoration-line: line-through;
+    color: black;
+}
+
+.undone {
+    text-decoration: none;
+    color: black;
+}
+
+table { 
+    border-radius: 1ex;
+    border: 1px, solid black;
+    box-shadow: 0, 0, 0.5em black;
+}
+button { 
+    width: 100%;
+}
