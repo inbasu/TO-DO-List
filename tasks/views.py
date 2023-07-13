@@ -6,7 +6,7 @@ from django.views.generic import View, CreateView, DeleteView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from tasks.models import List, Task
-from tasks.forms import TaskForm
+from tasks.forms import TaskForm, ListForm
 
 # Create your views here.
 
@@ -16,14 +16,18 @@ class HomeView(LoginRequiredMixin, View):
     context = {"title": "Home"}
 
     def get(self, request):
+        self.context["form"] = ListForm
         self.context["lists"] = List.objects.filter(owner=request.user)
         return render(request, template_name=self.template, context=self.context)
 
     def post(self, request):
-        new_list = List.objects.create(
-            name=request.POST["name"],
-            owner=request.user,
-        )
+        form = ListForm(request.POST)
+        if form.is_valid():
+            new_list = form.save(commit=False)
+            new_list.owner = request.user
+
+            new_list.save()
+
         new_list.save()
         return redirect(new_list)
 
@@ -33,6 +37,7 @@ class TaskListView(LoginRequiredMixin, View):
     context = {}
 
     def get(self, request, list_name):
+        self.context["form"] = TaskForm
         self.context["list"] = List.objects.get(pk=list_name)
         self.context["tasks"] = Task.objects.filter(to_list=self.context["list"])
         return render(request, template_name=self.template, context=self.context)
